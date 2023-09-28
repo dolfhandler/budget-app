@@ -1,6 +1,6 @@
 
 
-let products = new Array();
+let products = [];
 
 //containers
 let containerProductForm = document.querySelector('#container-product-form');
@@ -25,13 +25,14 @@ let discount = document.querySelector('#discount');
 let hasDiscount = document.querySelector('#hasDiscount');
 
 //events
+document.addEventListener('DOMContentLoaded', handlerContentLoaded);
 hasDiscount.addEventListener('change', handlerChangeHasDiscount);
 btnCreate.addEventListener('click', handlerClickBtnCreate);
 btnCancel.addEventListener('click', handlerClickBtnCancel);
 btnSave.addEventListener('click', handlerClickBtnSave);
 
 
-//application Mutation Observer
+//implement Mutation Observer
 const config = {
     attributes: false,
     childList: true,
@@ -61,6 +62,30 @@ observer.observe(containerProductList, config);
 
 
 //handler events
+function handlerContentLoaded(event) {
+
+    loadProducts();
+
+}
+
+function loadProducts() {
+
+    const hasElements = products.length > 0;
+
+    if (hasElements) {
+
+        containerProductList.style.display = 'block'
+        products.forEach(addProductToList);
+        showTotalValueByProducts();
+
+    } else {
+
+        containerProductList.style.display = 'none'
+
+    }
+
+}
+
 function handlerChangeHasDiscount(event) {
 
     const show = event.target.checked ? 'block' : 'none';
@@ -171,6 +196,8 @@ function handlerClickBtnDelete(event) {
 
     //delete products from view
     productItem.remove();
+
+    showTotalValueByProducts();
 
 }
 
