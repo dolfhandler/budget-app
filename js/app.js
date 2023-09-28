@@ -31,36 +31,6 @@ btnCreate.addEventListener('click', handlerClickBtnCreate);
 btnCancel.addEventListener('click', handlerClickBtnCancel);
 btnSave.addEventListener('click', handlerClickBtnSave);
 
-
-//implement Mutation Observer
-const config = {
-    attributes: false,
-    childList: true,
-    subtree: false
-};
-
-const callback = (mutationList, observer) => {
-
-    for (const mutation of mutationList) {
-
-        if (mutation.type === Constants.MutationTypes.CHILD && products.length > 0) {
-
-            //dinamyc buttons
-            let btnDelete = document.querySelector('.btnDelete');
-
-            //dinamyc events
-            btnDelete.addEventListener('click', handlerClickBtnDelete);
-
-        }
-
-    }
-
-};
-
-const observer = new MutationObserver(callback);
-observer.observe(containerProductList, config);
-
-
 //handler events
 function handlerContentLoaded(event) {
 
@@ -178,6 +148,12 @@ function addProductToList(product) {
     </a>
 `;
     containerProductList.innerHTML = template + containerProductList.innerHTML;
+
+    //dinamyc buttons
+    let btnDelete = document.querySelectorAll('.btnDelete');
+
+    //dinamyc events
+    btnDelete.forEach(btn => btn.addEventListener('click', handlerClickBtnDelete));
 
 }
 
