@@ -30,6 +30,36 @@ btnCreate.addEventListener('click', handlerClickBtnCreate);
 btnCancel.addEventListener('click', handlerClickBtnCancel);
 btnSave.addEventListener('click', handlerClickBtnSave);
 
+
+//application Mutation Observer
+const config = {
+    attributes: false,
+    childList: true,
+    subtree: false
+};
+
+const callback = (mutationList, observer) => {
+
+    for (const mutation of mutationList) {
+
+        if (mutation.type === Constants.MutationTypes.CHILD && products.length > 0) {
+
+            //dinamyc buttons
+            let btnDelete = document.querySelector('.btnDelete');
+
+            //dinamyc events
+            btnDelete.addEventListener('click', handlerClickBtnDelete);
+
+        }
+
+    }
+
+};
+
+const observer = new MutationObserver(callback);
+observer.observe(containerProductList, config);
+
+
 //handler events
 function handlerChangeHasDiscount(event) {
 
@@ -40,7 +70,6 @@ function handlerChangeHasDiscount(event) {
 
 function handlerClickBtnCreate(event) {
 
-    console.log('handlerClickBtnCreate');
     containerProductForm.style.display = 'block';
     containerCreateProduct.style.display = 'none';
     containerTotalValue.style.display = 'none';
@@ -62,7 +91,7 @@ function handlerClickBtnCancel(event) {
 function handlerClickBtnSave(event) {
 
     const product = new Product(
-        new Date().getTime(),
+        new Date().getTime().toString(),
         description.value,
         parseFloat(value.value),
         parseFloat(amount.value),
@@ -78,17 +107,24 @@ function handlerClickBtnSave(event) {
     containerTotalValue.style.display = 'block';
     containerProductList.style.display = 'block';
 
+    showTotalValueByProducts();
+    Utils.clearForm(document.querySelectorAll('form input'));
+
+}
+
+function showTotalValueByProducts() {
+
     containerTotalValue.innerHTML = `<p class="text-success display-1">
     $${Utils.getTotalValueByProducts(products)}
     </p>`;
-    Utils.clearForm(document.querySelectorAll('form input'));
 
 }
 
 function addProductToList(product) {
 
     const template = `
-    <a href="#" class="list-group-item list-group-item-action">
+    <a class="product-item list-group-item list-group-item-action"
+    product-id="${product.id}">
         <div class="d-flex w-100 justify-content-between">
             <div class="w-100">
                 <div class="d-flex w-100 justify-content-between">
@@ -108,7 +144,8 @@ function addProductToList(product) {
                     <div class="mr-2"><b>Descuento:</b> ${product.discount}%</div>
                 </small>
             </div>
-            <div id="btnDelete" class="text-danger d-flex align-items-center">
+            <div class="btnDelete text-danger d-flex align-items-center"
+            product-id="${product.id}">
                 <i class="fa-solid fa-circle-xmark m-2"></i>
             </div>
         </div>
@@ -119,9 +156,23 @@ function addProductToList(product) {
 
 }
 
+//handler dinamyc events
+function handlerClickBtnDelete(event) {
 
+    const btnDelete = (event.target.tagName === 'I') ?
+        event.target.parentElement :
+        event.target;
 
+    const productId = btnDelete.getAttribute('product-id');
+    const productItem = btnDelete.parentElement.parentElement;
 
+    //delete products logically
+    products = products.filter(p => p.id !== productId);
+
+    //delete products from view
+    productItem.remove();
+
+}
 
 
 

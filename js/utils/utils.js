@@ -19,7 +19,6 @@ class Utils {
         inputs.forEach(input => {
 
             let inputType = input.getAttribute('type');
-            console.log(input);
 
             if (this.textFields.includes(inputType)) {
                 input.value = '';
