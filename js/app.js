@@ -40,6 +40,7 @@ function handlerChangeHasDiscount(event) {
 
 function handlerClickBtnCreate(event) {
 
+    console.log('handlerClickBtnCreate');
     containerProductForm.style.display = 'block';
     containerCreateProduct.style.display = 'none';
     containerTotalValue.style.display = 'none';
